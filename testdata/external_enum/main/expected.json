@@ -1,0 +1,78 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Test API with external enum references",
+    "title": "External Enum Test API",
+    "contact": {},
+    "version": "1.0"
+  },
+  "basePath": "/api",
+  "paths": {
+    "/task": {
+      "get": {
+        "description": "Returns a task that uses enums from external package",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "summary": "Get a task with external enum fields",
+        "operationId": "get_task",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved task",
+            "schema": {
+              "$ref": "#/definitions/api.Task"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "api.Task": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "priority": {
+          "$ref": "#/definitions/external.Priority"
+        },
+        "status": {
+          "$ref": "#/definitions/external.Status"
+        }
+      }
+    },
+    "external.Priority": {
+      "type": "integer",
+      "enum": [1, 2, 3],
+      "x-enum-comments": {
+        "PriorityHigh": "PriorityHigh represents high priority",
+        "PriorityLow": "PriorityLow represents low priority",
+        "PriorityMedium": "PriorityMedium represents medium priority"
+      },
+      "x-enum-descriptions": [
+        "PriorityLow represents low priority",
+        "PriorityMedium represents medium priority",
+        "PriorityHigh represents high priority"
+      ],
+      "x-enum-varnames": ["PriorityLow", "PriorityMedium", "PriorityHigh"]
+    },
+    "external.Status": {
+      "type": "string",
+      "enum": ["active", "inactive", "pending"],
+      "x-enum-comments": {
+        "StatusActive": "StatusActive represents active status",
+        "StatusInactive": "StatusInactive represents inactive status",
+        "StatusPending": "StatusPending represents pending status"
+      },
+      "x-enum-descriptions": [
+        "StatusActive represents active status",
+        "StatusInactive represents inactive status",
+        "StatusPending represents pending status"
+      ],
+      "x-enum-varnames": ["StatusActive", "StatusInactive", "StatusPending"]
+    }
+  }
+}

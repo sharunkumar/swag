@@ -2282,6 +2282,41 @@ func TestParseExternalModels(t *testing.T) {
 	assert.Equal(t, string(expected), string(b))
 }
 
+func TestParseExternalEnums(t *testing.T) {
+	searchDir := "testdata/external_enum/main"
+	mainAPIFile := "main.go"
+	p := New(SetParseDependency(1))
+	err := p.ParseAPI(searchDir, mainAPIFile, defaultParseDepth)
+	assert.NoError(t, err)
+
+	// Check that external enum types have their enum values properly loaded
+	extStatusType := p.packages.uniqueDefinitions["external.Status"]
+	assert.NotNil(t, extStatusType)
+	assert.NotNil(t, extStatusType.Enums)
+	assert.Len(t, extStatusType.Enums, 3)
+
+	// Verify enum values are correct
+	enumValues := make([]string, len(extStatusType.Enums))
+	for i, enum := range extStatusType.Enums {
+		enumValues[i] = enum.Value.(string)
+	}
+	assert.Contains(t, enumValues, "active")
+	assert.Contains(t, enumValues, "inactive")
+	assert.Contains(t, enumValues, "pending")
+
+	// Check Priority enum as well
+	extPriorityType := p.packages.uniqueDefinitions["external.Priority"]
+	assert.NotNil(t, extPriorityType)
+	assert.NotNil(t, extPriorityType.Enums)
+	assert.Len(t, extPriorityType.Enums, 3)
+
+	// Verify generated swagger contains enum information
+	b, _ := json.MarshalIndent(p.swagger, "", "    ")
+	expected, err := os.ReadFile(filepath.Join(searchDir, "expected.json"))
+	assert.NoError(t, err)
+	assert.Equal(t, string(expected), string(b))
+}
+
 func TestParseGoList(t *testing.T) {
 	mainAPIFile := "main.go"
 	p := New(ParseUsingGoList(true), SetParseDependency(1))

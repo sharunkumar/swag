@@ -448,12 +448,26 @@ func (pkgDefs *PackagesDefinitions) loadExternalPackage(importPath string) error
 		return err
 	}
 
+	parsedSchemas := make(map[*TypeSpecDef]*Schema)
 	for _, info := range loaderProgram.AllPackages {
 		pkgPath := strings.TrimPrefix(info.Pkg.Path(), "vendor/")
 		for _, astFile := range info.Files {
-			pkgDefs.parseTypesFromFile(astFile, pkgPath, nil)
+			pkgDefs.parseTypesFromFile(astFile, pkgPath, parsedSchemas)
 		}
 	}
+
+	// Evaluate const variables for the newly loaded packages
+	for _, info := range loaderProgram.AllPackages {
+		pkgPath := strings.TrimPrefix(info.Pkg.Path(), "vendor/")
+		if pkg, ok := pkgDefs.packages[pkgPath]; ok {
+			for _, constVar := range pkg.OrderedConst {
+				pkgDefs.EvaluateConstValue(pkg, constVar, nil)
+			}
+		}
+	}
+
+	// Collect const enums for the newly loaded packages
+	pkgDefs.collectConstEnums(parsedSchemas)
 
 	return nil
 }
