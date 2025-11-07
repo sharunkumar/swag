@@ -1,5 +1,4 @@
 package api
-package api
 
 import (
 	"github.com/swaggo/swag/testdata/external_enum/external"
@@ -7,9 +6,9 @@ import (
 
 // Task represents a task with external enum fields
 type Task struct {
-	ID       int              `json:"id"`
-	Name     string           `json:"name"`
-	Status   external.Status  `json:"status"`
+	ID       int               `json:"id"`
+	Name     string            `json:"name"`
+	Status   external.Status   `json:"status"`
 	Priority external.Priority `json:"priority"`
 }
 

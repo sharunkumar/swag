@@ -1,5 +1,4 @@
 package external
-package external
 
 // Status represents the external enum type
 type Status string
@@ -7,7 +6,7 @@ type Status string
 const (
 	// StatusActive represents active status
 	StatusActive Status = "active"
-	// StatusInactive represents inactive status 
+	// StatusInactive represents inactive status
 	StatusInactive Status = "inactive"
 	// StatusPending represents pending status
 	StatusPending Status = "pending"
